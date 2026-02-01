@@ -1,1 +1,1 @@
-# ditto.github.io
+# ditto-ditto.github.io
