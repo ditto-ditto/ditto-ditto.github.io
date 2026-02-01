@@ -1,49 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Countdown</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine?</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #ff9a9e, #fad0c4);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: #fff;
+    overflow: hidden;
+  }
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle at top, #0f172a, #020617);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: monospace;
-      color: #e5e7eb;
-    }
-    .card {
-      padding: 24px;
-      border: 1px solid #38bdf8;
-      border-radius: 12px;
-      text-align: center;
-      animation: float 3s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-  </style>
+  h1 {
+    font-size: 2em;
+    margin-bottom: 40px;
+    text-align: center;
+    text-shadow: 2px 2px 4px #00000050;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 20px;
+  }
+
+  button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 2px 2px 10px #00000050;
+  }
+
+  #yes {
+    background-color: #ff476f;
+    color: #fff;
+  }
+
+  #no {
+    background-color: #555;
+    color: #fff;
+    position: relative;
+  }
+
+  /* Fun floating hearts */
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    transform: rotate(-45deg);
+    animation: float 4s linear infinite;
+  }
+
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+  }
+
+  .heart::before {
+    top: -10px;
+    left: 0;
+  }
+  .heart::after {
+    left: 10px;
+    top: 0;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) rotate(-45deg); opacity: 1;}
+    100% { transform: translateY(-600px) rotate(-45deg); opacity: 0;}
+  }
+</style>
 </head>
-
 <body>
-  <div class="card">
-    <h2>⏳ Countdown Initialized</h2>
-    <p id="days">Loading…</p>
-    <p>// status: excited</p>
-  </div>
 
-  <script>
-    const meetDate = new Date("2026-02-22");
-    const today = new Date();
-    const diff = meetDate - today;
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("days").textContent =
-      "Days until we meet: " + days;
-  </script>
+<h1>Will you be my Valentine? ❤️</h1>
+
+<div class="buttons">
+  <button id="yes">Yes</button>
+  <button id="no">No</button>
+</div>
+
+<script>
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+
+// Function to make a floating heart
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.style.left = Math.random() * window.innerWidth + "px";
+  heart.style.width = heart.style.height = (10 + Math.random()*20) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 4000);
+}
+
+// Add a few hearts continuously
+setInterval(createHeart, 500);
+
+// No button trick
+noBtn.addEventListener("mouseenter", () => {
+  // Move no button randomly
+  const x = Math.random() * 200 - 100; // shift left/right
+  const y = Math.random() * 200 - 100; // shift up/down
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+
+  // Make Yes button slightly bigger
+  const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+  yesBtn.style.fontSize = (currentSize + 2) + "px";
+});
+
+// Optional: click yes reaction
+yesBtn.addEventListener("click", () => {
+  alert("Yay! You said yes! ❤️");
+});
+</script>
+
 </body>
 </html>
