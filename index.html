@@ -57,12 +57,7 @@ body{
 
 h1{
     font-size:3rem;
-    margin-bottom:20px;
-}
-
-.message{
-    font-size:1.3rem;
-    margin-bottom:30px;
+    margin-bottom:25px;
 }
 
 button{
@@ -98,6 +93,7 @@ button:hover{
     border-radius:20px;
     width:90%;
     max-width:450px;
+    color:black;
 }
 
 input{
@@ -110,9 +106,9 @@ input{
 
 /* FINAL MESSAGE */
 #finalMessage{
-    margin-top:30px;
-    font-size:1.3rem;
     display:none;
+    margin-top:20px;
+    font-size:1.3rem;
 }
 
 /* CONFETTI */
@@ -133,20 +129,15 @@ canvas{
 
     <h1>🎂 Happy Birthday Shivangi 🎂</h1>
 
-    <p class="message">
-        To get your gift, enter the game by clicking the button below.
-    </p>
-
     <button id="startBtn" onclick="startGame()">🎁 Start Game</button>
 
     <div id="finalMessage">
         <h2>🎉 Treasure Hunt Begins! 🎉</h2>
         <br>
-        <p><b>Let's go for a treasure hunt: here's your first clue...</b></p>
+        <p><b>Here's your first clue...</b></p>
         <br>
         <p>🔍 Clue #1:</p>
-        <p>This box is empty, but your day won't be, I've hidden little pieces of you and me 
-        Start where you sip something warm and light, Your green tea spot will guide you right</p>
+        <p>Look where dreams rest every night.</p>
     </div>
 
 </div>
@@ -169,7 +160,7 @@ const questions = [
 { question:"What is my favourite colour?", answer:"blue" },
 { question:"Which city did we first meet in?", answer:"delhi" },
 { question:"My favourite food?", answer:"pizza" },
-/* { question:"What nickname do I call you?", answer:"angel" },*/
+{ question:"What nickname do I call you?", answer:"angel" },
 { question:"What month is your birthday?", answer:"august" }
 ];
 
@@ -207,7 +198,6 @@ function checkAnswer(){
         else{
             document.getElementById("popup").style.display="none";
             document.getElementById("finalMessage").style.display="block";
-            document.getElementById("startBtn").style.display="none";
             startConfetti();
         }
 
