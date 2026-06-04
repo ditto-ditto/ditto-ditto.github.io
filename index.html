@@ -24,7 +24,7 @@ body{
     position:relative;
 }
 
-/* Balloons */
+/* BALLOONS */
 .balloon{
     position:absolute;
     bottom:-150px;
@@ -45,12 +45,8 @@ body{
 }
 
 @keyframes floatUp{
-    from{
-        transform:translateY(0);
-    }
-    to{
-        transform:translateY(-120vh);
-    }
+    from{transform:translateY(0);}
+    to{transform:translateY(-120vh);}
 }
 
 .container{
@@ -78,12 +74,14 @@ button{
     font-size:1rem;
     cursor:pointer;
     font-weight:bold;
+    transition:.3s;
 }
 
 button:hover{
     transform:scale(1.05);
 }
 
+/* POPUP */
 .popup{
     display:none;
     position:fixed;
@@ -102,10 +100,6 @@ button:hover{
     max-width:450px;
 }
 
-.popup-content h2{
-    margin-bottom:20px;
-}
-
 input{
     width:100%;
     padding:12px;
@@ -114,12 +108,14 @@ input{
     margin-bottom:15px;
 }
 
+/* FINAL MESSAGE */
 #finalMessage{
     margin-top:30px;
     font-size:1.3rem;
     display:none;
 }
 
+/* CONFETTI */
 canvas{
     position:fixed;
     inset:0;
@@ -134,76 +130,59 @@ canvas{
 <canvas id="confetti"></canvas>
 
 <div class="container">
+
     <h1>🎂 Happy Birthday Shivangi 🎂</h1>
 
     <p class="message">
         To get your gift, enter the game by clicking the button below.
     </p>
 
-    <button onclick="startGame()">🎁 Start Game</button>
+    <button id="startBtn" onclick="startGame()">🎁 Start Game</button>
 
     <div id="finalMessage">
         <h2>🎉 Treasure Hunt Begins! 🎉</h2>
         <br>
-        <p><strong>Let's go for a treasure hunt: here's your first clue...</strong></p>
+        <p><b>Let's go for a treasure hunt: here's your first clue...</b></p>
         <br>
         <p>🔍 Clue #1:</p>
         <p>Look where dreams rest every night.</p>
     </div>
+
 </div>
 
+<!-- POPUP -->
 <div class="popup" id="popup">
     <div class="popup-content">
         <h2 id="question"></h2>
 
-        <input id="answer" type="text" placeholder="Type answer">
+        <input id="answer" type="text" placeholder="Type your answer">
 
         <button onclick="checkAnswer()">Submit</button>
     </div>
 </div>
 
-<!-- Optional Music -->
-<!--
-<audio autoplay loop>
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
--->
-
 <script>
 
 /* QUESTIONS */
-
 const questions = [
-{
-question:"Question 1: What is my favourite colour?",
-answer:"blue"
-},
-{
-question:"Question 2: Which city did we first meet in?",
-answer:"delhi"
-},
-{
-question:"Question 3: My favourite food?",
-answer:"pizza"
-},
-{
-question:"Question 4: What nickname do I call you?",
-answer:"angel"
-},
-{
-question:"Question 5: What month is your birthday?",
-answer:"august"
-}
+{ question:"What is my favourite colour?", answer:"blue" },
+{ question:"Which city did we first meet in?", answer:"delhi" },
+{ question:"My favourite food?", answer:"pizza" },
+{ question:"What nickname do I call you?", answer:"angel" },
+{ question:"What month is your birthday?", answer:"august" }
 ];
 
 let currentQuestion = 0;
 
+/* START GAME */
 function startGame(){
     currentQuestion = 0;
     document.getElementById("popup").style.display="flex";
+    document.getElementById("startBtn").style.display="none";
     loadQuestion();
 }
 
+/* LOAD QUESTION */
 function loadQuestion(){
     document.getElementById("question").innerText =
     questions[currentQuestion].question;
@@ -211,13 +190,11 @@ function loadQuestion(){
     document.getElementById("answer").value="";
 }
 
+/* CHECK ANSWER */
 function checkAnswer(){
 
     const userAnswer =
-    document.getElementById("answer")
-    .value
-    .trim()
-    .toLowerCase();
+    document.getElementById("answer").value.trim().toLowerCase();
 
     if(userAnswer === questions[currentQuestion].answer.toLowerCase()){
 
@@ -228,86 +205,57 @@ function checkAnswer(){
         }
         else{
             document.getElementById("popup").style.display="none";
-
             document.getElementById("finalMessage").style.display="block";
-
+            document.getElementById("startBtn").style.display="none";
             startConfetti();
         }
 
-    }else{
-        alert("❌ Wrong answer. Try again!");
+    } else {
+        alert("❌ Wrong answer! Try again.");
     }
 }
 
 /* BALLOONS */
-
-const colors = [
-"#ff4d6d",
-"#4dabf7",
-"#ffd43b",
-"#69db7c",
-"#b197fc"
-];
+const colors = ["#ff4d6d","#4dabf7","#ffd43b","#69db7c","#b197fc"];
 
 for(let i=0;i<20;i++){
-
     let balloon = document.createElement("div");
-
     balloon.classList.add("balloon");
-
     balloon.style.left=Math.random()*100+"%";
-
-    balloon.style.background=
-    colors[Math.floor(Math.random()*colors.length)];
-
-    balloon.style.animationDuration=
-    (8 + Math.random()*8)+"s";
-
+    balloon.style.background=colors[Math.floor(Math.random()*colors.length)];
+    balloon.style.animationDuration=(6+Math.random()*6)+"s";
     balloon.style.opacity=.8;
-
     document.body.appendChild(balloon);
 }
 
 /* CONFETTI */
-
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let confettiPieces=[];
+let pieces=[];
 
 function startConfetti(){
-
-    for(let i=0;i<300;i++){
-
-        confettiPieces.push({
+    for(let i=0;i<250;i++){
+        pieces.push({
             x:Math.random()*canvas.width,
             y:Math.random()*canvas.height-canvas.height,
-            r:Math.random()*6+2,
-            d:Math.random()*300
+            r:Math.random()*6+2
         });
     }
-
-    animateConfetti();
+    animate();
 }
 
-function animateConfetti(){
-
+function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    confettiPieces.forEach((p,index)=>{
-
+    pieces.forEach((p,i)=>{
         ctx.beginPath();
-
         ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-
-        ctx.fillStyle=
-        colors[index % colors.length];
-
+        ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
-
         p.y += 3;
 
         if(p.y > canvas.height){
@@ -315,7 +263,7 @@ function animateConfetti(){
         }
     });
 
-    requestAnimationFrame(animateConfetti);
+    requestAnimationFrame(animate);
 }
 
 window.addEventListener("resize",()=>{
