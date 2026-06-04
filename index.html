@@ -3,108 +3,326 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Countdown</title>
+<title>Happy Birthday ❤️</title>
 
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle at top, #0f172a, #020617);
-    font-family: monospace;
-    color: #e5e7eb;
-    overflow: hidden;
-  }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
 
-  .card {
-    padding: 24px 32px;
-    border: 2px solid #38bdf8;
-    border-radius: 16px;
-    text-align: center;
-    background: rgba(15,23,42,0.8);
-    box-shadow: 0 0 20px #38bdf8aa;
-    animation: float 3s ease-in-out infinite;
-  }
+body{
+    overflow:hidden;
+    min-height:100vh;
+    background:linear-gradient(135deg,#ff758c,#ff7eb3);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    position:relative;
+}
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
+/* Balloons */
+.balloon{
+    position:absolute;
+    bottom:-150px;
+    width:60px;
+    height:80px;
+    border-radius:50%;
+    animation:floatUp linear infinite;
+}
 
-  h2 {
-    font-size: 2em;
-    margin-bottom: 15px;
-  }
+.balloon::after{
+    content:"";
+    position:absolute;
+    width:2px;
+    height:80px;
+    background:white;
+    top:80px;
+    left:50%;
+}
 
-  #countdown {
-    font-size: 1.6em;
-    font-weight: bold;
-    color: #facc15;
-    letter-spacing: 1px;
-  }
+@keyframes floatUp{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(-120vh);
+    }
+}
 
-  .star {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: #fff;
-    border-radius: 50%;
-    animation: twinkle 3s infinite;
-  }
+.container{
+    z-index:2;
+    color:white;
+    padding:20px;
+}
 
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.2; transform: translateY(0); }
-    50% { opacity: 1; transform: translateY(-2px); }
-  }
+h1{
+    font-size:3rem;
+    margin-bottom:20px;
+}
+
+.message{
+    font-size:1.3rem;
+    margin-bottom:30px;
+}
+
+button{
+    padding:15px 35px;
+    border:none;
+    border-radius:30px;
+    background:white;
+    color:#ff4081;
+    font-size:1rem;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.popup{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.7);
+    justify-content:center;
+    align-items:center;
+    z-index:10;
+}
+
+.popup-content{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:450px;
+}
+
+.popup-content h2{
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    margin-bottom:15px;
+}
+
+#finalMessage{
+    margin-top:30px;
+    font-size:1.3rem;
+    display:none;
+}
+
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:5;
+}
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h2>Countdown</h2>
-  <div id="countdown">Loading...</div>
+<canvas id="confetti"></canvas>
+
+<div class="container">
+    <h1>🎂 Happy Birthday Shivangi 🎂</h1>
+
+    <p class="message">
+        To get your gift, enter the game by clicking the button below.
+    </p>
+
+    <button onclick="startGame()">🎁 Start Game</button>
+
+    <div id="finalMessage">
+        <h2>🎉 Treasure Hunt Begins! 🎉</h2>
+        <br>
+        <p><strong>Let's go for a treasure hunt: here's your first clue...</strong></p>
+        <br>
+        <p>🔍 Clue #1:</p>
+        <p>Look where dreams rest every night.</p>
+    </div>
 </div>
 
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2 id="question"></h2>
+
+        <input id="answer" type="text" placeholder="Type answer">
+
+        <button onclick="checkAnswer()">Submit</button>
+    </div>
+</div>
+
+<!-- Optional Music -->
+<!--
+<audio autoplay loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+-->
+
 <script>
-  const countdownEl = document.getElementById("countdown");
-  const targetDate = new Date("2026-06-20T00:00:00").getTime();
 
-  function updateCountdown() {
-    const now = new Date().getTime();
-    const diff = targetDate - now;
+/* QUESTIONS */
 
-    if (diff <= 0) {
-      countdownEl.textContent = "🎉 It's the day!";
-      return;
+const questions = [
+{
+question:"Question 1: What is my favourite colour?",
+answer:"blue"
+},
+{
+question:"Question 2: Which city did we first meet in?",
+answer:"delhi"
+},
+{
+question:"Question 3: My favourite food?",
+answer:"pizza"
+},
+{
+question:"Question 4: What nickname do I call you?",
+answer:"angel"
+},
+{
+question:"Question 5: What month is your birthday?",
+answer:"august"
+}
+];
+
+let currentQuestion = 0;
+
+function startGame(){
+    currentQuestion = 0;
+    document.getElementById("popup").style.display="flex";
+    loadQuestion();
+}
+
+function loadQuestion(){
+    document.getElementById("question").innerText =
+    questions[currentQuestion].question;
+
+    document.getElementById("answer").value="";
+}
+
+function checkAnswer(){
+
+    const userAnswer =
+    document.getElementById("answer")
+    .value
+    .trim()
+    .toLowerCase();
+
+    if(userAnswer === questions[currentQuestion].answer.toLowerCase()){
+
+        currentQuestion++;
+
+        if(currentQuestion < questions.length){
+            loadQuestion();
+        }
+        else{
+            document.getElementById("popup").style.display="none";
+
+            document.getElementById("finalMessage").style.display="block";
+
+            startConfetti();
+        }
+
+    }else{
+        alert("❌ Wrong answer. Try again!");
+    }
+}
+
+/* BALLOONS */
+
+const colors = [
+"#ff4d6d",
+"#4dabf7",
+"#ffd43b",
+"#69db7c",
+"#b197fc"
+];
+
+for(let i=0;i<20;i++){
+
+    let balloon = document.createElement("div");
+
+    balloon.classList.add("balloon");
+
+    balloon.style.left=Math.random()*100+"%";
+
+    balloon.style.background=
+    colors[Math.floor(Math.random()*colors.length)];
+
+    balloon.style.animationDuration=
+    (8 + Math.random()*8)+"s";
+
+    balloon.style.opacity=.8;
+
+    document.body.appendChild(balloon);
+}
+
+/* CONFETTI */
+
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confettiPieces=[];
+
+function startConfetti(){
+
+    for(let i=0;i<300;i++){
+
+        confettiPieces.push({
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height-canvas.height,
+            r:Math.random()*6+2,
+            d:Math.random()*300
+        });
     }
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
+    animateConfetti();
+}
 
-    countdownEl.textContent =
-      `${days}d ${hours}h ${minutes}m ${seconds}s`;
-  }
+function animateConfetti(){
 
-  setInterval(updateCountdown, 1000);
-  updateCountdown();
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // Floating stars
-  function createStar() {
-    const star = document.createElement("div");
-    star.className = "star";
-    star.style.top = Math.random() * window.innerHeight + "px";
-    star.style.left = Math.random() * window.innerWidth + "px";
-    document.body.appendChild(star);
-    setTimeout(() => star.remove(), 4000);
-  }
+    confettiPieces.forEach((p,index)=>{
 
-  setInterval(createStar, 200);
+        ctx.beginPath();
+
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+
+        ctx.fillStyle=
+        colors[index % colors.length];
+
+        ctx.fill();
+
+        p.y += 3;
+
+        if(p.y > canvas.height){
+            p.y = -10;
+        }
+    });
+
+    requestAnimationFrame(animateConfetti);
+}
+
+window.addEventListener("resize",()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
 </script>
 
 </body>
